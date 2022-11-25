@@ -1,1 +1,1 @@
-# intel-ipu6-camera-hal
+# ipu6-camera-hal
