@@ -9,6 +9,8 @@ Release:        1.%{commitdate}git%{shortcommit}%{?dist}
 License:        Apache-2.0
 
 Source0: https://github.com/intel/%{name}/archive/%{commit}/%{name}-%{shortcommit}.tar.gz
+Source1: 60-ipu6-tgl-adl.rules
+Source2: ipu-setlink
 
 BuildRequires:  systemd-rpm-macros
 BuildRequires:  chrpath
@@ -19,9 +21,9 @@ BuildRequires:  gcc
 BuildRequires:  g++
 BuildRequires:  expat-devel
 
-Requires:       ipu6-camera-bins
-
 ExclusiveArch:  x86_64
+
+Requires:       ipu6-camera-bins
 
 %description
 ipu6-camera-hal provides the basic hardware access APIs for IPU6.
@@ -77,30 +79,47 @@ make -j`nproc`
 mkdir -p %{buildroot}/lib/udev/rules.d/
 for i in ipu6 ipu6ep; do
   mkdir -p %{buildroot}%{_libdir}/$i
+  mkdir -p %{buildroot}%{_libdir}/$i/pkgconfig
   mkdir -p %{buildroot}%{_datarootdir}/defaults/etc/$i
   mkdir -p %{buildroot}%{_includedir}/$i
   # lib
-  cp -pr $i/build/lib* %{buildroot}%{_libdir}/$i
+  cp -pr $i/build/libcamhal.a %{buildroot}%{_libdir}/$i/libcamhal.a
+  cp -pr $i/build/libcamhal.so %{buildroot}%{_libdir}/$i/libcamhal.so
   chrpath --replace %{_libdir}/$i %{buildroot}%{_libdir}/$i/libcamhal.so
   # include
   cp -rp $i/include/* %{buildroot}%{_includedir}/$i
   # config
   cp -rp $i/config/linux/$i/* %{buildroot}%{_datarootdir}/defaults/etc/$i
-  # udev
-  cp -rp $i/config/linux/rules.d/* %{buildroot}/lib/udev/rules.d/
+  #pkgconfig
+  cp -pr $i/libcamhal.pc %{buildroot}%{_libdir}/$i/pkgconfig
+  sed -i \
+    -e "s|libdir=\${prefix}/lib64|libdir=%{_libdir}/$i|g" \
+    -e "s|includedir=\${prefix}/include/libcamhal|includedir=%{_includedir}/$i|g" \
+    %{buildroot}%{_libdir}/$i/pkgconfig/*.pc
 done
+
+# symbolic link is used to resolve the library name conflict. 
+ln -sf %{_rundir}/libcamhal.so %{buildroot}%{_libdir}/libcamhal.so
+
+# udev1
+mkdir -p %{buildroot}/usr/lib/udev/rules.d
+cp -rp %{SOURCE1} %{buildroot}/usr/lib/udev/rules.d
+install -D -m 0755 %{SOURCE2} %{buildroot}/usr/lib/udev
 
 %files
 %license LICENSE
 %dir %{_libdir}/ipu6
 %dir %{_libdir}/ipu6ep
 %{_libdir}/ipu6/*.so*
-%{_libdir}/ipu6/*.a
-%dir %{_libdir}/ipu6ep
 %{_libdir}/ipu6ep/*.so*
-%{_libdir}/ipu6ep/*.a
+%{_libdir}/ipu6/*.a
+%{_libdir}/ipu6ep/*.a*
+%{_libdir}/libcamhal.so
 %{_datarootdir}/defaults/etc/*
-/lib/udev/rules.d/*
+/usr/lib/udev/rules.d/*
+/usr/lib/udev/*
+%{_libdir}/ipu6/pkgconfig/*
+%{_libdir}/ipu6ep/pkgconfig/*
 
 %files devel
 %{_includedir}/ipu6

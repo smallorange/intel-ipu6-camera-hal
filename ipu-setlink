@@ -1,0 +1,35 @@
+#!/bin/bash
+
+VENDOR_ID=0x8086
+IPU6_DEVID=0x9a19
+IPU6EP_DEVID=0x465d
+
+pci_path=`find /sys/bus/pci/devices -type l`
+
+if [[ $1 != *ipu* ]]; then
+    exit 0
+fi
+
+
+for i in $pci_path;
+do
+    if [ -f "$i/vendor" ]; then
+        echo "$i/vendor"
+        vendor=`cat $i/vendor`
+        if [[ $vendor == $VENDOR_ID ]]; then
+            device_id=`cat $i/device`
+
+            case "$device_id" in 
+                $IPU6_DEVID)
+                    echo "ipu6"
+                    ln -sf /usr/lib64/ipu6/libcamhal.so /run/libcamhal.so
+                    exit 0
+                    ;;
+                $IPU6EP_DEVID)
+                    ln -sf /usr/lib64/ipu6ep/libcamhal.so /run/libcamhal.so
+                    exit 0
+                    ;;
+            esac
+        fi
+    fi
+done
