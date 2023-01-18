@@ -23,10 +23,12 @@ do
                 $IPU6_DEVID)
                     echo "ipu6"
                     ln -sf /usr/lib64/ipu6/libcamhal.so /run/libcamhal.so
+                    ln -sf /usr/share/defaults/etc/ipu6 /run/camera
                     exit 0
                     ;;
                 $IPU6EP_DEVID)
                     ln -sf /usr/lib64/ipu6ep/libcamhal.so /run/libcamhal.so
+                    ln -sf /usr/share/defaults/etc/ipu6ep /run/camera
                     exit 0
                     ;;
             esac

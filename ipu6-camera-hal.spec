@@ -6,7 +6,7 @@ Name:           ipu6-camera-hal
 Summary:        Hardware abstraction layer for Intel IPU6
 URL:            https://github.com/intel/ipu6-camera-hal
 Version:        0.0
-Release:        2.%{commitdate}git%{shortcommit}%{?dist}
+Release:        3.%{commitdate}git%{shortcommit}%{?dist}
 License:        Apache-2.0
 
 Source0:        https://github.com/intel/%{name}/archive/%{commit}/%{name}-%{shortcommit}.tar.gz
@@ -96,6 +96,7 @@ done
 
 # symbolic link is used to resolve the library name conflict. 
 ln -sf %{_rundir}/libcamhal.so %{buildroot}%{_libdir}/libcamhal.so
+ln -sf %{_rundir}/camera %{buildroot}%{_datadir}/defaults/etc/camera
 
 # udev
 mkdir -p %{buildroot}/usr/lib/udev/rules.d
@@ -130,6 +131,9 @@ install -p -D -m 0755 %{SOURCE2} %{buildroot}/usr/lib/udev
 /usr/bin/udevadm trigger
 
 %changelog
+* Tue Jan 17 2023 Kate Hsuan <hpa@redhat.com> - 0.0-3.20221112gitcc0b859
+- Add symbolic link for camera configuration files
+
 * Fri Nov 25 2022 Kate Hsuan <hpa@redhat.com> - 0.0-2.20221112gitcc0b859
 - push udev rules
 - format and style fixes
