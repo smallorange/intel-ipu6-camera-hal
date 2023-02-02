@@ -1,0 +1,71 @@
+From b4695c93e44bec2fe07ee6b863a64fcda81b8a29 Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Tue, 24 Jan 2023 15:32:08 +0100
+Subject: [PATCH] Fix build-error due to missing cstdint.h
+
+Fix the following build errors:
+
+In file included from src/platformdata/gc/IGraphConfig.h:19,
+                 from src/platformdata/gc/GraphUtils.h:18,
+                 from src/platformdata/gc/GraphUtils.cpp:18:
+src/platformdata/gc/HalStream.h:33:5: error: 'uint32_t' does not name a type
+   33 |     uint32_t width;
+      |     ^~~~~~~~
+src/platformdata/gc/HalStream.h:1:1: note: 'uint32_t' is defined in header '<cstdint>'; did you forget to '#include <cstdint>'?
+  +++ |+#include <cstdint>
+    1 | /*
+src/platformdata/gc/HalStream.h:34:5: error: 'uint32_t' does not name a type
+   34 |     uint32_t height;
+      |     ^~~~~~~~
+src/platformdata/gc/HalStream.h:34:5: note: 'uint32_t' is defined in header '<cstdint>'; did you forget to '#include <cstdint>'?
+src/platformdata/gc/HalStream.h:54:5: error: 'uint32_t' does not name a type
+   54 |     uint32_t width() const { return mWidth; }
+      |     ^~~~~~~~
+src/platformdata/gc/HalStream.h:54:5: note: 'uint32_t' is defined in header '<cstdint>'; did you forget to '#include <cstdint>'?
+src/platformdata/gc/HalStream.h:55:5: error: 'uint32_t' does not name a type
+   55 |     uint32_t height() const { return mHeight; }
+      |     ^~~~~~~~
+src/platformdata/gc/HalStream.h:55:5: note: 'uint32_t' is defined in header '<cstdint>'; did you forget to '#include <cstdint>'?
+src/platformdata/gc/HalStream.h:62:5: error: 'uint32_t' does not name a type
+   62 |     uint32_t mWidth;
+      |     ^~~~~~~~
+src/platformdata/gc/HalStream.h:62:5: note: 'uint32_t' is defined in header '<cstdint>'; did you forget to '#include <cstdint>'?
+src/platformdata/gc/HalStream.h:63:5: error: 'uint32_t' does not name a type
+   63 |     uint32_t mHeight;
+      |     ^~~~~~~~
+src/platformdata/gc/HalStream.h:63:5: note: 'uint32_t' is defined in header '<cstdint>'; did you forget to '#include <cstdint>'?
+src/platformdata/gc/HalStream.h: In constructor 'icamera::HalStream::HalStream(icamera::streamProps&, void*)':
+src/platformdata/gc/HalStream.h:43:15: error: class 'icamera::HalStream' does not have any field named 'mWidth'
+   43 |             : mWidth(props.width),
+      |               ^~~~~~
+src/platformdata/gc/HalStream.h:43:28: error: 'struct icamera::streamProps' has no member named 'width'
+   43 |             : mWidth(props.width),
+      |                            ^~~~~
+src/platformdata/gc/HalStream.h:44:15: error: class 'icamera::HalStream' does not have any field named 'mHeight'
+   44 |               mHeight(props.height),
+      |               ^~~~~~~
+src/platformdata/gc/HalStream.h:44:29: error: 'struct icamera::streamProps' has no member named 'height'
+   44 |               mHeight(props.height),
+      |                             ^~~~~~
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ src/platformdata/gc/HalStream.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/platformdata/gc/HalStream.h b/src/platformdata/gc/HalStream.h
+index 0393d62..eab6720 100644
+--- a/src/platformdata/gc/HalStream.h
++++ b/src/platformdata/gc/HalStream.h
+@@ -16,6 +16,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ namespace icamera {
+ 
+ // Temporary solution
+-- 
+2.39.0
+

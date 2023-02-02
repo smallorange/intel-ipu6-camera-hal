@@ -1,2 +1,0 @@
-KERNEL=="video[0-9]*", RUN+="ipu-setlink %p"
-
