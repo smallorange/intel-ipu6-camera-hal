@@ -1,4 +1,3 @@
 SUBSYSTEM=="pci", ATTR{vendor}=="0x8086", ATTR{device}=="0x9a19", RUN+="/bin/ln -sf /usr/lib64/ipu6/libcamhal.so /run/libcamhal.so"
 SUBSYSTEM=="pci", ATTR{vendor}=="0x8086", ATTR{device}=="0x465d", RUN+="/bin/ln -sf /usr/lib64/ipu6ep/libcamhal.so /run/libcamhal.so"
-SUBSYSTEM=="pci", ATTR{vendor}=="0x8086", ATTR{device}=="0x9a19", RUN+="/bin/ln -sf /usr/share/defaults/etc/ipu6 /run/camera"
-SUBSYSTEM=="pci", ATTR{vendor}=="0x8086", ATTR{device}=="0x465d", RUN+="/bin/ln -sf /usr/share/defaults/etc/ipu6ep /run/camera"
+
