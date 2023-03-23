@@ -82,6 +82,8 @@ install -p -m 0644 -D %{SOURCE1} %{buildroot}%{_udevrulesdir}/60-intel-ipu6.rule
 sed -i -e "s|}/lib64|}/lib64/ipu6|" %{buildroot}%{_libdir}/pkgconfig/libcamhal.pc
 
 # v4l2-relayd configuration examples
+mkdir -p %{buildroot}%{_sysconfdir}
+ln -sf /run/v4l2-relayd %{buildroot}%{_sysconfdir}/v4l2-relayd
 install -p -D -m 0644 %{SOURCE2} %{buildroot}%{_datadir}/defaults/etc/ipu6ep/v4l2-relayd
 install -p -D -m 0644 %{SOURCE3} %{buildroot}%{_datadir}/defaults/etc/ipu6/v4l2-relayd
 
@@ -92,6 +94,7 @@ install -p -D -m 0644 %{SOURCE3} %{buildroot}%{_datadir}/defaults/etc/ipu6/v4l2-
 
 %files
 %license LICENSE
+%{_sysconfdir}
 %{_libdir}/*/libcamhal.so
 %{_libdir}/libcamhal.so
 %{_datadir}/defaults/etc/*
